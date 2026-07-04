@@ -1,53 +1,4 @@
-# Goals : Dictionary Mapping 
-# Containers | Get them in a dictionary | Got them in the dictionary 
-# New thing : Dictionary Mapping | eliminates if else
-
-network = {'A':'Food','B':'Shopping','C':'Bills','D':'Miscellaneous'}
-
-containers = {
-    'Food': [],
-    'Shopping': [],
-    'Bills': [],
-    'Miscellaneous': []
-}
-# Menu 2.0
-menu_1 = [
-    '-----EXPENSE MENU-----',
-    'A. Food',
-    'B. Shopping',
-    'C. Bills',
-    'D. Miscellaneous',
-    'Q. Quit',
-]
-
-# Menu Printer
-print()
-for i in menu_1:
-    print(i)
-print()
-
-# User Input of the Menu board | Added: Error Handling | 
-while True:
-    menu_entry = input('Expense Category: ').upper().strip()
-# Items Selection Error Handling
-    if menu_entry == 'Q':
-        break
-    # New Variable added to take input of the mapping and also used it to make error handling easy (in this case)
-    network_input1 = network.get(menu_entry) 
-    if network_input1 is None:
-        print('Invalid Category, Please Re-enter')
-        print()
-        continue
-# Items Expense Entry Error Handling    
-    try:
-        expense_entry = int(input('Enter Expense Amount: '))
-    except ValueError:
-        print('Invalid Expense, Please Re-enter')
-        continue
-    # User Input Operations
-    containers[network_input1].append(expense_entry)
-
-# ------------------------------------------------------------------------------------------------------------------------------------------------------
+# Goals : [1] Data Persistence 
 
 # Functions Defined 
 def Overall_Expenses ():
@@ -90,8 +41,113 @@ def Expense_Delete(network_input2):
         Expense_History(network_input2)
         print('Delete an Expense: ')
 
-# 2nd Menu 2.0 
+def Create_file(): # Opens the file and Adds the data into the file.
+    with open('Expense_File.txt','w+') as file:
+        # Writes Food Data
+        file.write(','.join(str(i) for i in containers['Food']))
+        file.write('\n')
+        # Writes Shopping Data
+        file.write(','.join(str(i) for i in containers['Shopping']))
+        file.write('\n')
+        # Writes Bills Data
+        file.write(','.join(str(i) for i in containers['Bills']))
+        file.write('\n')
+        # Writes Miscellaneous Data
+        file.write(','.join(str(i) for i in containers['Miscellaneous']))
+
+def Read_n_Load_data():# Read data and loads it into dictionary
+    # Reads the Data Line by line and strips empty spaces
+    with open('Expense_File.txt','r')as file: 
+        Food = file.readline().strip()
+        Shopping = file.readline().strip()
+        Bills = file.readline().strip()
+        Miscellaneous = file.readline().strip()
+    # Loads the data into the dictionary
+    for I in Food.split(','):
+        if I:
+            containers['Food'].append(int(I))
+    for I in Shopping.split(','):
+        if I:
+            containers['Shopping'].append(int(I))
+    for I in Bills.split(','):
+        if I:
+            containers['Bills'].append(int(I))
+    for I in Miscellaneous.split(','):
+        if I:
+            containers['Miscellaneous'].append(int(I))
+
+network = {'A':'Food','B':'Shopping','C':'Bills','D':'Miscellaneous'}
+containers = {
+    'Food': [],
+    'Shopping': [],
+    'Bills': [],
+    'Miscellaneous': []
+}
+# MENU 
+menu1 = [
+    '---FILE MENU---',
+    'A. Load Existing Data',
+    'B. Procced Without Loading'
+]
+print()
+for i in menu1:
+    print(i)
+print()
+
+while True:
+    menu1_entry = input('Enter Choice: ').strip().upper()
+    if menu1_entry not in ['A','B']:
+       print('Invalid Input')
+       continue
+    if menu1_entry == 'A':
+        try:
+            with open('Expense_File.txt','r')as file:
+                Read_n_Load_data()
+                break
+        except FileNotFoundError:
+            print('File non Existent')
+            continue
+    elif menu1_entry == 'B':
+        break
+
+# Menu 2.0
 menu_2 = [
+    '-----EXPENSE MENU-----',
+    'A. Food',
+    'B. Shopping',
+    'C. Bills',
+    'D. Miscellaneous',
+    'Q. Quit',
+]
+# Menu Printer
+print()
+for i in menu_2:
+    print(i)
+print()
+
+# User Input of the Menu board | Added: Error Handling | 
+while True:
+    menu_entry2 = input('Expense Category: ').upper().strip()
+# Items Selection Error Handling
+    if menu_entry2 == 'Q':
+        break
+    # New Variable added to take input of the mapping and also used it to make error handling easy (in this case)
+    network_input1 = network.get(menu_entry2) 
+    if network_input1 is None:
+        print('Invalid Category, Please Re-enter')
+        print()
+        continue
+# Items Expense Entry Error Handling    
+    try:
+        expense_entry = int(input('Enter Expense Amount: '))
+    except ValueError:
+        print('Invalid Expense, Please Re-enter')
+        continue
+    # User Input Operations
+    containers[network_input1].append(expense_entry)
+# ------------------------------------------------------------------------------------------------------------------------------------------------------
+# 2nd Menu 2.0 
+menu_3 = [
     '-----EXPENSE OPERATIONS MENU-----',
     'A. Single Category',
     'B. Overall Expense',
@@ -100,30 +156,28 @@ menu_2 = [
 ]
 # This prints the menu line by line
 print()
-for i in menu_2:
+for i in menu_3:
     print(i)
 print()
-
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 #  Menu Input Logic
 while True:
-    menu_2 = input('Expense Operations: ').upper().strip()
-    if menu_2 == 'Q':
+    menu_entry3 = input('Expense Operations: ').upper().strip()
+    if menu_entry3 == 'Q':
         break
     # Error Handling 
-    if menu_2 not in ['A','B','C',]:
+    if menu_entry3 not in ['A','B','C',]:
         print('Invalid Input')
         continue
     
-    if menu_2 == 'A':
+    if menu_entry3 == 'A':
         Single_Category_Expense()
     
-    elif menu_2 == 'B':
+    elif menu_entry3 == 'B':
         Overall_Expenses()
 
 # Menu option C is a bit broad because it does 2 things   
-    elif menu_2 == 'C':
+    elif menu_entry3 == 'C':
         # takes the input inside the option C 
         Category = input('Which category: ').strip().upper()
         # Error Handling for the input
@@ -134,5 +188,5 @@ while True:
             continue
         else:
             Expense_History(network_input2)
-            print('Delete an Expense: ')
         Expense_Delete(network_input2)
+Create_file() # this saves the data after every operations is complete.
