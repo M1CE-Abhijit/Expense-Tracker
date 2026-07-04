@@ -1,11 +1,11 @@
-# Goals to Achieve | [1] Expense History [2] Delete Expense [3] Get my Containers in a Dictionary
-
-# containers | Get them in a dictionary
-food = []
-shopping = []
-bills = []
-miscellaneous = []
-
+# Goals : Dictionary Refactor
+# Containers | Get them in a dictionary | Got them in the dictionary
+containers = {
+    'food': [],
+    'shopping': [],
+    'bills': [],
+    'miscellaneous': []
+}
 # Menu 2.0
 menu_1 = [
     '-----EXPENSE MENU-----',
@@ -15,6 +15,8 @@ menu_1 = [
     'D. Miscellaneous',
     'Q. Quit',
 ]
+
+# Menu Printer
 print()
 for i in menu_1:
     print(i)
@@ -37,13 +39,13 @@ while True:
         continue
 # User Input Operations
     if menu_entry == 'A':
-        food.append(expense_entry)
+        containers['food'].append(expense_entry)
     elif menu_entry == 'B':
-        shopping.append(expense_entry)
+        containers['shopping'].append(expense_entry)
     elif menu_entry == 'C':
-        bills.append(expense_entry)
+        containers['bills'].append(expense_entry)
     elif menu_entry == 'D':
-        miscellaneous.append(expense_entry)
+        containers['miscellaneous'].append(expense_entry)
 
 # 2nd Menu 2.0 | Earlier there were repeated print statement Now it is just a single list
 menu_2 = [
@@ -61,12 +63,12 @@ print()
 
 # Functions Defined 
 def Overall_Expenses ():
-    overall_expense = sum(food + shopping + bills + miscellaneous)
+    overall_expense = sum(containers['food'] + containers['shopping'] + containers['bills'] + containers['miscellaneous'])
     print(f'Your Overall Expense: ${overall_expense}')
     print()
 
 def Single_Category_Expense():
-    expenses = [sum(food),sum(shopping),sum(bills),sum(miscellaneous)]
+    expenses = [sum(containers['food']),sum(containers['shopping']),sum(containers['bills']),sum(containers['miscellaneous'])]
     print(f'Food Expenses: ${expenses[0]}')
     print(f'Shopping Expenses: ${expenses[1]}')
     print(f'Bills Expenses: ${expenses[2]}')
@@ -82,38 +84,23 @@ def Expense_Delete(list):
     while True:                        
         delete = input('Y/N: ').upper()
         if delete == 'N':
-            break
+            break    
         if delete != 'Y':
             print('Invalid Input')
             continue    
         try:
-            index = int(input('Which Expense (9999 to Quit): '))
+            index = int(input('Which Expense (0 to Quit): '))
         except ValueError:
             print('Wrong Input Type')
             continue
-        if index == 9999:
+        if index == 0:
             break
         if index > list.__len__():
             print('Not Possible')
             continue
         list.pop(index-1)
-        break
-
-def Expense_ReDelete(list):
-    while True:
-        try:
-            index = int(input('Which Expense (0000 to Quit): '))
-        except ValueError:
-            print('Wrong Input Type')
-            continue
-        if index == 0000:
-            break
-        if index > list.__len__():
-            print('Not Possible')
-            continue
-        list.pop(index-1)
-        Expense_History(list,tittle)
-
+        Expense_History(list,tittle) # instead of executing this function alone i decided to pair this up with another function. | It helped me to remove the redelete function. 
+        print('Delete an Expense: ')
 
 #  Menu Input Logic
 while True:
@@ -133,7 +120,7 @@ while True:
 
 # Menu option C is a bit broad because it does 2 things   
     elif menu_2 == 'C':
-        # take the input inside the option C 
+        # takes the input inside the option C 
         Category = input('Which category: ').strip().upper()
         # Error Handling for the input
         if Category not in ['A','B','C','D']:
@@ -141,20 +128,17 @@ while True:
             continue
         # Logic Handling of the input
         if Category == 'A':
-            list = food
+            list = containers['food']
             tittle = 'FOOD EXPENSE HISTORY'
         elif Category == 'B':
-            list = shopping
+            list = containers['shopping']
             tittle = 'SHOPPING EXPENSE HISTORY'
         elif Category == 'C':
-            list = bills
+            list = containers['bills']
             tittle = 'BILLS EXPENSE HISTORY'
         elif Category == 'D':
-            list = miscellaneous
+            list = containers['miscellaneous']
             tittle = 'MISCELLANEOUS EXPENSE HISTORY'
         Expense_History(list,tittle)
-        print('Delete An Expense?: ')
         Expense_Delete(list)
-        Expense_History(list,tittle)
-        Expense_ReDelete(list)
-
+    
