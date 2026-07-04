@@ -1,10 +1,14 @@
-# Goals : Dictionary Refactor
-# Containers | Get them in a dictionary | Got them in the dictionary
+# Goals : Dictionary Mapping 
+# Containers | Get them in a dictionary | Got them in the dictionary 
+# New thing : Dictionary Mapping | eliminates if else
+
+network = {'A':'Food','B':'Shopping','C':'Bills','D':'Miscellaneous'}
+
 containers = {
-    'food': [],
-    'shopping': [],
-    'bills': [],
-    'miscellaneous': []
+    'Food': [],
+    'Shopping': [],
+    'Bills': [],
+    'Miscellaneous': []
 }
 # Menu 2.0
 menu_1 = [
@@ -28,8 +32,11 @@ while True:
 # Items Selection Error Handling
     if menu_entry == 'Q':
         break
-    if menu_entry not in ['A','B','C','D']:
+    # New Variable added to take input of the mapping and also used it to make error handling easy (in this case)
+    network_input1 = network.get(menu_entry) 
+    if network_input1 is None:
         print('Invalid Category, Please Re-enter')
+        print()
         continue
 # Items Expense Entry Error Handling    
     try:
@@ -37,50 +44,31 @@ while True:
     except ValueError:
         print('Invalid Expense, Please Re-enter')
         continue
-# User Input Operations
-    if menu_entry == 'A':
-        containers['food'].append(expense_entry)
-    elif menu_entry == 'B':
-        containers['shopping'].append(expense_entry)
-    elif menu_entry == 'C':
-        containers['bills'].append(expense_entry)
-    elif menu_entry == 'D':
-        containers['miscellaneous'].append(expense_entry)
+    # User Input Operations
+    containers[network_input1].append(expense_entry)
 
-# 2nd Menu 2.0 | Earlier there were repeated print statement Now it is just a single list
-menu_2 = [
-    '-----EXPENSE OPERATIONS MENU-----',
-    'A. Single Category',
-    'B. Overall Expense',
-    'C. Expense History',
-    'Q. Quit',
-]
-# This prints the menu line by line
-print()
-for i in menu_2:
-    print(i)
-print()
+# ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Functions Defined 
 def Overall_Expenses ():
-    overall_expense = sum(containers['food'] + containers['shopping'] + containers['bills'] + containers['miscellaneous'])
+    overall_expense = sum(containers['Food'] + containers['Shopping'] + containers['Bills'] + containers['Miscellaneous'])
     print(f'Your Overall Expense: ${overall_expense}')
     print()
 
 def Single_Category_Expense():
-    expenses = [sum(containers['food']),sum(containers['shopping']),sum(containers['bills']),sum(containers['miscellaneous'])]
+    expenses = [sum(containers['Food']),sum(containers['Shopping']),sum(containers['Bills']),sum(containers['Miscellaneous'])]
     print(f'Food Expenses: ${expenses[0]}')
     print(f'Shopping Expenses: ${expenses[1]}')
     print(f'Bills Expenses: ${expenses[2]}')
     print(f'Miscellaneous Expense: ${expenses[3]}')
     print()
 
-def Expense_History(list, tittle):
-    print(f'---{tittle}---')
-    for index, entry in enumerate(list, start=1):
-        print(f'{index}. {entry}')
+def Expense_History(network_input2):
+    print(f'-----{network_input2} Expense History-----')
+    for i , e in enumerate(containers[network_input2],start=1):
+        print(f'{i}. {e}')
 
-def Expense_Delete(list):
+def Expense_Delete(network_input2):
     while True:                        
         delete = input('Y/N: ').upper()
         if delete == 'N':
@@ -95,12 +83,28 @@ def Expense_Delete(list):
             continue
         if index == 0:
             break
-        if index > list.__len__():
+        if index > containers[network_input2].__len__():
             print('Not Possible')
             continue
-        list.pop(index-1)
-        Expense_History(list,tittle) # instead of executing this function alone i decided to pair this up with another function. | It helped me to remove the redelete function. 
+        containers[network_input2].pop(index-1)
+        Expense_History(network_input2)
         print('Delete an Expense: ')
+
+# 2nd Menu 2.0 
+menu_2 = [
+    '-----EXPENSE OPERATIONS MENU-----',
+    'A. Single Category',
+    'B. Overall Expense',
+    'C. Expense History',
+    'Q. Quit',
+]
+# This prints the menu line by line
+print()
+for i in menu_2:
+    print(i)
+print()
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #  Menu Input Logic
 while True:
@@ -123,22 +127,12 @@ while True:
         # takes the input inside the option C 
         Category = input('Which category: ').strip().upper()
         # Error Handling for the input
-        if Category not in ['A','B','C','D']:
+        network_input2 = network.get(Category)
+        if network_input2 is None:
             print('Invalid Input')
+            print()
             continue
-        # Logic Handling of the input
-        if Category == 'A':
-            list = containers['food']
-            tittle = 'FOOD EXPENSE HISTORY'
-        elif Category == 'B':
-            list = containers['shopping']
-            tittle = 'SHOPPING EXPENSE HISTORY'
-        elif Category == 'C':
-            list = containers['bills']
-            tittle = 'BILLS EXPENSE HISTORY'
-        elif Category == 'D':
-            list = containers['miscellaneous']
-            tittle = 'MISCELLANEOUS EXPENSE HISTORY'
-        Expense_History(list,tittle)
-        Expense_Delete(list)
-    
+        else:
+            Expense_History(network_input2)
+            print('Delete an Expense: ')
+        Expense_Delete(network_input2)
